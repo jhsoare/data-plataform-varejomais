@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local IDE and AI tooling (machine-specific paths/configs)
+.mcp.json
+.cursor/
+.claude/
+.ai-dev-kit/
