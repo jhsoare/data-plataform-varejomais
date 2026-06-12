@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "resources": [
+    {
+      "type": "dashboard",
+      "name": "Vis\u00e3o 360 - Clientes VarejoMais",
+      "id": "01f165e352cf10469f70c8c3122cc553",
+      "created_at": "2026-06-11T22:17:25.205985+00:00",
+      "updated_at": "2026-06-11T22:17:25.205985+00:00",
+      "url": "https://dbc-79f7f0ef-6d29.cloud.databricks.com/sql/dashboardsv3/01f165e352cf10469f70c8c3122cc553"
+    }
+  ]
+}

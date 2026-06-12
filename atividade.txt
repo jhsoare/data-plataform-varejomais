@@ -1,0 +1,14 @@
+Contexto do projeto:
+
+
+Catalog: data-platform
+Schema: criar schema por sistema de origem.
+Dados crus: /Volumes/data-platform/default/landing-zone-varejo/
+
+
+Tarefas:
+
+1 - Criar Notebooks e Pipeline data-platform-360: bronze (Auto Loader) → silver → gold 
+2 - Job customer-360-daily: diário 7AM, email joaoh.soaresp@gmail.com se falhar, timeout 1h. Rodar em serverless.
+3 - Dashboard AI/BI "Visão 360  - Clientes ":
+O plano aprovado e o projeto desenvolvido, já pode publicar no ambiente todas as tarefas.

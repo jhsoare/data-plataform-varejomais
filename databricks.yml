@@ -1,0 +1,17 @@
+bundle:
+  name: data-platform-360
+
+include:
+  - resources/jobs/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-79f7f0ef-6d29.cloud.databricks.com
+      profile: DEFAULT
+  prod:
+    workspace:
+      host: https://dbc-79f7f0ef-6d29.cloud.databricks.com
+      profile: DEFAULT
