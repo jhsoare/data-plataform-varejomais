@@ -1,0 +1,114 @@
+resources:
+  jobs:
+    job_visao_360_daily:
+      name: job-visao-360-daily
+      schedule:
+        quartz_cron_expression: "0 0 7 * * ?"
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      email_notifications:
+        on_failure:
+          - joaoh.soaresp@gmail.com
+      timeout_seconds: 3600
+      tasks:
+        - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/00_setup_schemas.py
+          environment_key: serverless
+
+        - task_key: bronze_pdv
+          depends_on:
+            - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/bronze/01_bronze_pdv_lojas.py
+          environment_key: serverless
+
+        - task_key: bronze_ecom
+          depends_on:
+            - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/bronze/02_bronze_ecommerce_pedidos.py
+          environment_key: serverless
+
+        - task_key: bronze_app
+          depends_on:
+            - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/bronze/03_bronze_app_eventos.py
+          environment_key: serverless
+
+        - task_key: bronze_sap_clientes
+          depends_on:
+            - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/bronze/04_bronze_sap_clientes.py
+          environment_key: serverless
+
+        - task_key: bronze_sap_estoque
+          depends_on:
+            - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/bronze/05_bronze_sap_estoque.py
+          environment_key: serverless
+
+        - task_key: bronze_rede
+          depends_on:
+            - task_key: setup_schemas
+          notebook_task:
+            notebook_path: ../../src/notebooks/bronze/06_bronze_rede_adquirida.py
+          environment_key: serverless
+
+        - task_key: silver_produtos
+          depends_on:
+            - task_key: bronze_pdv
+            - task_key: bronze_ecom
+            - task_key: bronze_sap_estoque
+          notebook_task:
+            notebook_path: ../../src/notebooks/silver/07_silver_dim_produto.py
+          environment_key: serverless
+
+        - task_key: silver_clientes
+          depends_on:
+            - task_key: bronze_pdv
+            - task_key: bronze_sap_clientes
+            - task_key: bronze_rede
+            - task_key: bronze_ecom
+          notebook_task:
+            notebook_path: ../../src/notebooks/silver/08_silver_clientes_unificados.py
+          environment_key: serverless
+
+        - task_key: silver_pedidos
+          depends_on:
+            - task_key: silver_clientes
+            - task_key: silver_produtos
+          notebook_task:
+            notebook_path: ../../src/notebooks/silver/09_silver_pedidos_consolidados.py
+          environment_key: serverless
+
+        - task_key: gold_visao_360
+          depends_on:
+            - task_key: silver_pedidos
+            - task_key: bronze_app
+          notebook_task:
+            notebook_path: ../../src/notebooks/gold/10_gold_visao_360_clientes.py
+          environment_key: serverless
+
+        - task_key: gold_vendas
+          depends_on:
+            - task_key: silver_pedidos
+          notebook_task:
+            notebook_path: ../../src/notebooks/gold/11_gold_vendas_omnichannel.py
+          environment_key: serverless
+
+        - task_key: gold_demanda
+          depends_on:
+            - task_key: silver_pedidos
+            - task_key: bronze_sap_estoque
+          notebook_task:
+            notebook_path: ../../src/notebooks/gold/12_gold_base_previsao_demanda.py
+          environment_key: serverless
+
+      environments:
+        - environment_key: serverless
+          spec:
+            client: "2"
